@@ -44,10 +44,9 @@ CampfireDeployNotifications.config.rooms = []
 
 CampfireDeployNotifications has the following configuration options:
 - `rooms` - default rooms to notify of the deploy, specified by name.  Defaults to `["Technology - internal"]`.
-- `project_rooms` - project specific rooms to notify of the deploy, specified by name.  Defaults to nothing.
 - `project` - defaults to the repository name
 - `env` - fetches `:rails_env` variable from Capistrano, defaults to 'production'
 - `branch` - fetches `:branch` variable from Capistrano, defaults to 'master'
 - `user` - the git user name
-- `token` - default to the repository name
-- `subdomain` - default to the repository name
+- `token` - defaults to CAMPFIRE_TOKEN
+- `subdomain` - default to CAMPFIRE_SUBDOMAIN
