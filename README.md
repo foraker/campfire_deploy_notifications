@@ -21,19 +21,35 @@ And then execute:
 
 Require in your deploy.rb file:
 
-    `require "campfire_deploy_notifications/capistrano"`
+    require "campfire_deploy_notifications/capistrano"
 
-## Overriding Defaults
+## Adding Notified Rooms
 
-CampfireDeployNotifications is configurable.  For example, you can add a project specific room to be notified:
+By default, CampfireDeployNotifications will notify the "Technology - internal" room using the subdomain and token supplied in the environment.
+
+#### Adding a Room
 
 ```Ruby
-require "campfire_deploy_notifications/capistrano"
-
-CampfireDeployNotifications.project_rooms = ["Your Project Room"]
+CampfireDeployNotifications.config.add_room({
+  :name => "Some Room",
+  :subdomain => "an-alternative-subdomain", # Optional
+  :token => "an-alternative-token" # Optional
+})
 ```
 
-- `default_rooms` - default rooms to notify of the deploy, specified by name.  Defaults to `["Technology - internal"]`.
+#### Overriding the `rooms` configuration
+```Ruby
+CampfireDeployNotifications.config.rooms = [Room.new(:name => "Some Room")]
+
+# Or, pointlessly
+
+CampfireDeployNotifications.config.rooms = []
+```
+
+## Configuration
+
+CampfireDeployNotifications has the following configuration options:
+- `rooms` - default rooms to notify of the deploy, specified by name.  Defaults to `["Technology - internal"]`.
 - `project_rooms` - project specific rooms to notify of the deploy, specified by name.  Defaults to nothing.
 - `project` - defaults to the repository name
 - `env` - fetches `:rails_env` variable from Capistrano, defaults to 'production'
