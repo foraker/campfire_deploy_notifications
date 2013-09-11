@@ -2,79 +2,73 @@ require File.expand_path("../../lib/campfire_deploy_notifications/notification",
 
 module CampfireDeployNotifications
   describe Notification do
-    class Campfire
-      def message_room(room, message)
-        raise "Already messaged room: #{room}" if calls[room]
-        calls[room] = message
-      end
+    let(:campfire_message) { MockCampfireMessage.new }
+    let(:room)             { Room.new(:name => "Test Room") }
+    let(:config)           { OpenStruct.new(rooms: [room]) }
 
-      def has_messaged_room?(room, message)
-        calls[room] == message
-      end
-
-      def calls
-        @calls ||= {}
-      end
-
-      def call_count
-        calls.keys.count
-      end
-    end
-
-    let(:campfire) { Campfire.new }
-    let(:config)   { OpenStruct.new(default_rooms: ["Technology - internal"]) }
     let(:notification) do
       Notification.new({env: "production", branch: "master", repo: "git@github.com:organization/project.git"})
     end
 
     before do
       CampfireDeployNotifications.stub(config: config)
-      stub_const("CampfireDeployNotifications::Campfire", campfire)
+      stub_const("CampfireDeployNotifications::CampfireMessage", campfire_message)
       Notification.any_instance.stub(:`).with("git config user.name").and_return("User")
     end
 
     describe "#send" do
       it "notifies the technology room" do
         notification.send
-        campfire.should have_messaged_room("Technology - internal", "User deployed project:master to production")
+        campfire_message.should have_messaged_room(room, "User deployed project:master to production")
       end
 
       it "sends only 1 notification" do
         notification.send
-        campfire.call_count.should == 1
+        campfire_message.call_count.should == 1
       end
 
       it "allows :branch configuration" do
         config.branch = "staging"
         notification.send
-        campfire.should have_messaged_room("Technology - internal", "User deployed project:staging to production")
+        campfire_message.should have_messaged_room(room, "User deployed project:staging to production")
       end
 
       it "allows :env configuration" do
         config.env = "staging"
         notification.send
-        campfire.should have_messaged_room("Technology - internal", "User deployed project:master to staging")
+        campfire_message.should have_messaged_room(room, "User deployed project:master to staging")
+      end
+
+      it "allows :user configuration" do
+        config.user = "Special User Name"
+        notification.send
+        campfire_message.should have_messaged_room(room, "Special User Name deployed project:master to production")
       end
 
       it "allows :project configuration" do
         config.project = "project-2"
         notification.send
-        campfire.should have_messaged_room("Technology - internal", "User deployed project-2:master to production")
+        campfire_message.should have_messaged_room(room, "User deployed project-2:master to production")
       end
+    end
+  end
 
-      context "a project_rooms configuration is present" do
-        before { config.project_rooms = ["Project Room"] }
+  class MockCampfireMessage
+    def deliver(room, message)
+      raise "Already messaged room: #{room}" if calls[room]
+      calls[room] = message
+    end
 
-        it "notifies the technology room" do
-          notification.send
-          campfire.should have_messaged_room("Project Room", "User deployed master to production")
-        end
+    def has_messaged_room?(room, message)
+      calls[room] == message
+    end
 
-        it "sends 2 notifications" do
-          notification.send
-          campfire.call_count.should == 2
-        end
-      end
+    def calls
+      @calls ||= {}
+    end
+
+    def call_count
+      calls.keys.count
     end
   end
 end

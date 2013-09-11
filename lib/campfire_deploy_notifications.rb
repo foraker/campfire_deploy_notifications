@@ -1,13 +1,13 @@
 require "campfire_deploy_notifications/version"
-require 'ostruct'
+require "campfire_deploy_notifications/configuration"
 require 'campfire_deploy_notifications/notification'
 
 module CampfireDeployNotifications
   extend self
 
   def config
-    @config ||= OpenStruct.new({
-      :default_rooms => ["Technology - internal"]
+    @config ||= Configuration.new({
+      :rooms => [Room.new(:name => "Technology - internal")]
     })
   end
 
