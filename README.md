@@ -1,7 +1,5 @@
 # Campfire Deploy Notifications
 
-Deploy notifications for Campfire
-
 ## Installation
 
 Add your Campfire credentials and subdomain
@@ -25,7 +23,7 @@ Require in your deploy.rb file:
 
 ## Adding Notified Rooms
 
-By default, CampfireDeployNotifications will notify the "Technology - internal" room using the subdomain and token supplied in the environment.
+By default, we notify the "Technology - internal" room using the subdomain and token supplied in the environment.
 
 #### Adding a Room
 
