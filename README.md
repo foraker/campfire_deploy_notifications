@@ -11,13 +11,9 @@ Add your Campfire credentials and subdomain
 
 Add this line to your application's Gemfile:
 
-    gem 'campfire_deploy_notifications'
+    gem 'campfire_deploy_notifications', :gitub => "foraker/campfire_deploy_notifications"
 
-And then execute:
-
-    $ bundle
-
-Require in your deploy.rb file:
+Run `bundle install`, and then `require` the capistrano extension in your deploy.rb file:
 
     require "campfire_deploy_notifications/capistrano"
 
