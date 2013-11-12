@@ -33,7 +33,7 @@ CampfireDeployNotifications.config.add_room({
 
 #### Overriding the `rooms` configuration
 ```Ruby
-CampfireDeployNotifications.config.rooms = [Room.new(:name => "Some Room")]
+CampfireDeployNotifications.config.rooms = [CampfireDeployNotifications::Room.new(:name => "Some Room")]
 
 # Or, pointlessly
 
@@ -43,7 +43,7 @@ CampfireDeployNotifications.config.rooms = []
 ## Configuration
 
 CampfireDeployNotifications has the following configuration options:
-- `rooms` - Rooms to notify of the deploy.  Defaults to `Room.new(name: "Technology - internal")`.
+- `rooms` - Rooms to notify of the deploy.  Defaults to `CampfireDeployNotifications::Room.new(name: "Technology - internal")`.
 - `project` - defaults to the repository name
 - `env` - fetches `:rails_env` variable from Capistrano, defaults to 'production'
 - `branch` - fetches `:branch` variable from Capistrano, defaults to 'master'
